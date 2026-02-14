@@ -1,0 +1,16 @@
+id: 048066ab-0d15-4ab6-aec1-aec7ec391757
+pipeline_type: WORKSPACE
+name: Bronze_to_Silver
+configuration:
+  catalog_name: catalog_dev
+libraries:
+  - glob:
+      include: /Workspace/Databricks---End-to-End-Project/Databricks---End-to-End-Project/Databricks_project_bundle/src/DLT_Pipeline/Bronze_to_Silver/transformations/**
+schema: silver_dev
+continuous: false
+development: false
+photon: true
+channel: CURRENT
+catalog: catalog_dev
+serverless: true
+root_path: /Workspace/Databricks---End-to-End-Project/Databricks---End-to-End-Project/Databricks_project_bundle/src/DLT_Pipeline/Bronze_to_Silver
