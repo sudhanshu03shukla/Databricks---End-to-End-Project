@@ -1,0 +1,359 @@
+{
+  "datasets": [
+    {
+      "name": "95b24f84",
+      "displayName": "Earthquake_Detail",
+      "queryLines": [
+        "Select * from catalog_dev.silver_dev.earthquake_data_final"
+      ]
+    },
+    {
+      "name": "528c0401",
+      "displayName": "Earthquake_Magnitude_Type",
+      "queryLines": [
+        "select \r\n",
+        "\tcount(*) as total_magnitude_bucket,\r\n",
+        "    magnitude_bucket \r\n",
+        "        from (\r\n",
+        "            select \r\n",
+        "                CASE\r\n",
+        "                    WHEN mag < 2 THEN 'Micro (<2)'\r\n",
+        "                    WHEN mag BETWEEN 2 AND 3 THEN 'Minor (2–3)'\r\n",
+        "                    WHEN mag BETWEEN 3 AND 4 THEN 'Light (3–4)'\r\n",
+        "                    ELSE 'Moderate+ (4+)'\r\n",
+        "\t            END AS magnitude_bucket\r\n",
+        "            from catalog_dev.silver_dev.earthquake_data_final )\r\n",
+        "group by magnitude_bucket"
+      ]
+    },
+    {
+      "name": "c51b100a",
+      "displayName": "Earthquake_By_Location",
+      "queryLines": [
+        "SELECT \r\n",
+        "\tcount(*) AS event_count,\r\n",
+        "\tsplit(place, ', ')[1] as Location\r\n",
+        "FROM catalog_dev.silver_dev.earthquake_data_final\r\n",
+        "GROUP BY Location"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "213284ac",
+      "displayName": "Earthquake",
+      "layout": [
+        {
+          "widget": {
+            "name": "304bfe8a",
+            "multilineTextboxSpec": {
+              "lines": [
+                "# <span style=\"font-size:60px;line-height:1.5\">**Earthquake Dashboard**</span>"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "earthquake-details",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "95b24f84",
+                  "fields": [
+                    {
+                      "name": "mag",
+                      "expression": "`mag`"
+                    },
+                    {
+                      "name": "place",
+                      "expression": "`place`"
+                    },
+                    {
+                      "name": "time",
+                      "expression": "`time`"
+                    },
+                    {
+                      "name": "tsunami",
+                      "expression": "`tsunami`"
+                    },
+                    {
+                      "name": "url",
+                      "expression": "`url`"
+                    },
+                    {
+                      "name": "alert",
+                      "expression": "`alert`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Earthquake Details"
+              },
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "mag"
+                  },
+                  {
+                    "fieldName": "place"
+                  },
+                  {
+                    "fieldName": "time"
+                  },
+                  {
+                    "fieldName": "tsunami"
+                  },
+                  {
+                    "fieldName": "url"
+                  },
+                  {
+                    "fieldName": "alert"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 14,
+            "width": 12,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "map-view-earthquake-hit-areas",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "95b24f84",
+                  "fields": [
+                    {
+                      "name": "latitude",
+                      "expression": "`latitude`"
+                    },
+                    {
+                      "name": "longitude",
+                      "expression": "`longitude`"
+                    },
+                    {
+                      "name": "mag",
+                      "expression": "`mag`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Map View of Earthquake hit Areas"
+              },
+              "mark": {
+                "size": -0.8,
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 1
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ],
+                "opacity": 0.47
+              },
+              "widgetType": "symbol-map",
+              "encodings": {
+                "coordinates": {
+                  "latitude": {
+                    "fieldName": "latitude"
+                  },
+                  "longitude": {
+                    "fieldName": "longitude"
+                  }
+                },
+                "size": {
+                  "fieldName": "mag",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 12,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "a0b1e73a",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "528c0401",
+                  "fields": [
+                    {
+                      "name": "sum(total_magnitude_bucket)",
+                      "expression": "SUM(`total_magnitude_bucket`)"
+                    },
+                    {
+                      "name": "magnitude_bucket",
+                      "expression": "`magnitude_bucket`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "sum(total_magnitude_bucket)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Magnitude Range"
+                },
+                "color": {
+                  "fieldName": "magnitude_bucket",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 8,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "a16872d3",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "c51b100a",
+                  "fields": [
+                    {
+                      "name": "Location",
+                      "expression": "`Location`"
+                    },
+                    {
+                      "name": "sum(event_count)",
+                      "expression": "SUM(`event_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "Location",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(event_count)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "Location",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 8,
+            "width": 6,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
